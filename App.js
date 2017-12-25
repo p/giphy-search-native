@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import {Image, TextInput, TouchableHighlight, ScrollView} from 'react-native'
 import debounce from 'debounce'
 import Config from './config'
+import StatusBarBackground from './status-bar-background'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,9 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+      
+        <StatusBarBackground style={{backgroundColor:'#191970'}}/>
+        
         <Text>
           Giphy Search
         </Text>
