@@ -37,10 +37,12 @@ export default class App extends React.Component {
         {this.state.results.slice(0, 3).map((result, index) => (
           result.images ?
           <View key={index}>
-            <Text>{result.images.fixed_height.url}</Text>
             <Image
-              source={{uri: result.images.fixed_width.url}}
-              style={{height: 200}}
+              source={{uri: result.images.fixed_height.url}}
+              style={{
+                width: parseInt(result.images.fixed_height.width),
+                height: parseInt(result.images.fixed_height.height),
+              }}
             />
           </View>
           : null
