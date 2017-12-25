@@ -28,7 +28,7 @@ export default class App extends React.Component {
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        {this.state.results.slice(0, 3).map((result, index) => (
+        {this.state.results.map((result, index) => (
           result.images ?
           <View key={index}>
             <Image
