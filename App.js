@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import {Image, TextInput} from 'react-native'
+import {Image, TextInput, TouchableHighlight} from 'react-native'
 import debounce from 'debounce'
 import Config from './config'
 
@@ -31,13 +31,17 @@ export default class App extends React.Component {
         {this.state.results.map((result, index) => (
           result.images ?
           <View key={index}>
-            <Image
-              source={{uri: result.images.fixed_height.url}}
-              style={{
-                width: parseInt(result.images.fixed_height.width),
-                height: parseInt(result.images.fixed_height.height),
-              }}
-            />
+            <TouchableHighlight
+              onLongPress={this.image_did_long_press.bind(this)}
+            >
+              <Image
+                source={{uri: result.images.fixed_height.url}}
+                style={{
+                  width: parseInt(result.images.fixed_height.width),
+                  height: parseInt(result.images.fixed_height.height),
+                }}
+              />
+            </TouchableHighlight>
           </View>
           : null
         ))}
@@ -69,6 +73,9 @@ export default class App extends React.Component {
     this.setState({
       results: [...this.state.results, query],
     })
+  }
+  
+  image_did_long_press() {
   }
 }
 
