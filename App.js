@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import {TextInput} from 'react-native'
+import {Image, TextInput} from 'react-native'
 import debounce from 'debounce'
+import Config from './config'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -33,10 +34,16 @@ export default class App extends React.Component {
           </Text>
         : null}
         
-        {this.state.results.map((result, index) => (
-          <Text key={index}>
-            {result}
-          </Text>
+        {this.state.results.slice(0, 3).map((result, index) => (
+          result.images ?
+          <View key={index}>
+            <Text>{result.images.fixed_height.url}</Text>
+            <Image
+              source={{uri: result.images.fixed_width.url}}
+              style={{height: 200}}
+            />
+          </View>
+          : null
         ))}
       </View>
     );
@@ -48,6 +55,21 @@ export default class App extends React.Component {
   }
   
   fetch(query) {
+    const offset = 0
+    fetch(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=${Config.api_key}&offset=${offset}`)
+    .then(response => response.json())
+    .then(payload => {
+      this.setState({
+        results: payload.data,
+        query: query,
+        offset: offset,
+      })
+    })
+    .catch(response => {
+      this.setState({
+        error: response.message,
+      })
+    })
     this.setState({
       results: [...this.state.results, query],
     })
