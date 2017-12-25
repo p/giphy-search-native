@@ -28,12 +28,6 @@ export default class App extends React.Component {
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        {this.state.query ?
-          <Text>
-            Gifs for {this.state.query}
-          </Text>
-        : null}
-        
         {this.state.results.slice(0, 3).map((result, index) => (
           result.images ?
           <View key={index}>
