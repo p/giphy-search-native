@@ -57,4 +57,16 @@ describe('rower', () => {
     })
     expect(rv).to.deep.equal([[{width: 10}, {width: 11}], [{width: 80}, {width: 10}]])
   })
+  
+  it('handles string widths', () => {
+    const rv = rower({
+      results: [
+        {width: '10'},
+        {width: '11'},
+        {width: '80'},
+        {width: '10'},
+      ], image_fn: _.identity, container_width: 100, padding: 0,
+    })
+    expect(rv).to.deep.equal([[{width: '10'}, {width: '11'}], [{width: '80'}, {width: '10'}]])
+  })
 })

@@ -1,3 +1,5 @@
+import _ from 'underscore'
+import { Dimensions } from 'react-native'
 import Modal from 'react-native-modal'
 import React from 'react';
 import { Alert, Button, Clipboard, StyleSheet, Text, View } from 'react-native';
@@ -5,6 +7,7 @@ import {Image, TextInput, TouchableHighlight, ScrollView} from 'react-native'
 import debounce from 'debounce'
 import Config from './config'
 import StatusBarBackground from './status-bar-background'
+import rower from './rower'
 
 // https://stackoverflow.com/questions/41056761/detect-scrollview-has-reached-the-end/41058382
 const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
@@ -20,6 +23,7 @@ export default class App extends React.Component {
     this.state = {
       query: '',
       results: [],
+      rows: [],
       modal_visible: false,
       loaded_offsets: {},
     }
@@ -29,7 +33,7 @@ export default class App extends React.Component {
   
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={this.layout_did_change.bind(this)}>
       
         <StatusBarBackground style={{backgroundColor:'#191970'}}/>
         
@@ -46,29 +50,31 @@ export default class App extends React.Component {
         <ScrollView style={{width: '100%'}}
           onScroll={this.did_scroll.bind(this)}
         >
-        <View style={styles.images}>
-          {this.state.results.map((result, index) => (
-            result.images ?
-            <View key={index} style={{
-              width: parseInt(result.images.fixed_height.width) + 6,
-              height: parseInt(result.images.fixed_height.height) + 6,
-            }}>
-              <TouchableHighlight
-                onLongPress={this.image_did_long_press.bind(this, result)}
-              >
-                <Image
-                  source={{uri: result.images.fixed_height.url}}
-                  style={{
-                    alignSelf: 'center',
-                    width: parseInt(result.images.fixed_height.width),
-                    height: parseInt(result.images.fixed_height.height),
-                  }}
-                />
-              </TouchableHighlight>
+          {this.state.rows.map((row, index) => (
+            <View style={styles.images} key={index}>
+              {row.map((result, result_index) => (
+                result.images ?
+                <View key={result_index} style={{
+                  width: parseInt(result.images.fixed_height.width) + 6,
+                  height: parseInt(result.images.fixed_height.height) + 6,
+                }}>
+                  <TouchableHighlight
+                    onLongPress={this.image_did_long_press.bind(this, result)}
+                  >
+                    <Image
+                      source={{uri: result.images.fixed_height.url}}
+                      style={{
+                        alignSelf: 'center',
+                        width: parseInt(result.images.fixed_height.width),
+                        height: parseInt(result.images.fixed_height.height),
+                      }}
+                    />
+                  </TouchableHighlight>
+                </View>
+                : null
+              ))}
             </View>
-            : null
           ))}
-        </View>
         </ScrollView>
         
         <Modal isVisible={this.state.modal_visible}
@@ -83,6 +89,17 @@ export default class App extends React.Component {
         </Modal>        
       </View>
     );
+  }
+  
+  layout_did_change() {
+    const rows = rower({
+      results: _.filter(this.state.results, result => result.images),
+      image_fn: result => result.images.fixed_height,
+      // https://stackoverflow.com/questions/30203154/get-size-of-a-view-in-react-native
+      container_width: Dimensions.get('window').width,
+      padding: 6,
+    })
+    this.setState({rows: rows})
   }
   
   query_did_change(text) {
@@ -107,8 +124,15 @@ export default class App extends React.Component {
       } else {
         results = [...this.state.results, ...payload.data]
       }
+      const rows = rower({
+        results: _.filter(results, result => result.images),
+        image_fn: result => result.images.fixed_height,
+        container_width: Dimensions.get('window').width,
+        padding: 6,
+      })
       this.setState({
         results: results,
+        rows: rows,
         query: query,
         offset: offset,
       })
