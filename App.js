@@ -28,20 +28,29 @@ export default class App extends React.Component {
         </Text>
         
         <TextInput style={{height: 40}}
+          value={this.state.query}
           placeholder='Search...'
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        <ScrollView>
+        <ScrollView style={{width: '100%'}}>
+        <View style={{
+          flex: 1, flexDirection: 'row', flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}>
           {this.state.results.map((result, index) => (
             result.images ?
-            <View key={index}>
+            <View key={index} style={{
+              width: parseInt(result.images.fixed_height.width) + 6,
+              height: parseInt(result.images.fixed_height.height) + 6,
+            }}>
               <TouchableHighlight
                 onLongPress={this.image_did_long_press.bind(this)}
               >
                 <Image
                   source={{uri: result.images.fixed_height.url}}
                   style={{
+                    alignSelf: 'center',
                     width: parseInt(result.images.fixed_height.width),
                     height: parseInt(result.images.fixed_height.height),
                   }}
@@ -50,6 +59,7 @@ export default class App extends React.Component {
             </View>
             : null
           ))}
+        </View>
         </ScrollView>
       </View>
     );
