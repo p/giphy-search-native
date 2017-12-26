@@ -23,11 +23,11 @@ export default class App extends React.Component {
       
         <StatusBarBackground style={{backgroundColor:'#191970'}}/>
         
-        <Text>
+        <Text style={styles.header}>
           Giphy Search
         </Text>
         
-        <TextInput style={{height: 40}}
+        <TextInput style={styles.query}
           value={this.state.query}
           placeholder='Search...'
           onChangeText={this.query_did_change.bind(this)}
@@ -104,5 +104,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     flex: 1, flexDirection: 'row', flexWrap: 'wrap',
     justifyContent: 'center',
-  }
+  },
+  
+  header: {
+    fontSize: 24,
+  },
+  
+  query: {
+    height: 50,
+    backgroundColor: '#eee',
+    borderColor: '#444',
+    borderWidth: 1,
+    margin: 3,
+    padding: 4,
+    fontSize: 20,
+    width: '50%',
+  },
 });
