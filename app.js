@@ -52,27 +52,29 @@ export default class App extends React.Component {
           data={this.state.rows}
           renderItem={({item}) => {
             const row = item
-            return row.map((result, result_index) => (
-              result.images ?
-              <View key={result_index} style={{
-                width: parseInt(result.images.fixed_height.width) + 6,
-                height: parseInt(result.images.fixed_height.height) + 6,
-              }}>
-                <TouchableHighlight
-                  onLongPress={this.image_did_long_press.bind(this, result)}
-                >
-                  <Image
-                    source={{uri: result.images.fixed_height.url}}
-                    style={{
-                      alignSelf: 'center',
-                      width: parseInt(result.images.fixed_height.width),
-                      height: parseInt(result.images.fixed_height.height),
-                    }}
-                  />
-                </TouchableHighlight>
-              </View>
-              : null
-            ))
+            return <View style={styles.images}>
+              {row.map((result, result_index) => (
+                result.images ?
+                <View key={result_index} style={{
+                  width: parseInt(result.images.fixed_height.width) + 6,
+                  height: parseInt(result.images.fixed_height.height) + 6,
+                }}>
+                  <TouchableHighlight
+                    onLongPress={this.image_did_long_press.bind(this, result)}
+                  >
+                    <Image
+                      source={{uri: result.images.fixed_height.url}}
+                      style={{
+                        alignSelf: 'center',
+                        width: parseInt(result.images.fixed_height.width),
+                        height: parseInt(result.images.fixed_height.height),
+                      }}
+                    />
+                  </TouchableHighlight>
+                </View>
+                : null
+              ))}
+            </View>
           }}
         />
         
