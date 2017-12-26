@@ -1,5 +1,6 @@
+import Modal from 'react-native-modal'
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, Clipboard, StyleSheet, Text, View } from 'react-native';
 import {Image, TextInput, TouchableHighlight, ScrollView} from 'react-native'
 import debounce from 'debounce'
 import Config from './config'
@@ -12,6 +13,7 @@ export default class App extends React.Component {
     this.state = {
       query: '',
       results: [],
+      modal_visible: false,
     }
     
     this.fetch = debounce(this.fetch, 1000)
@@ -42,7 +44,7 @@ export default class App extends React.Component {
               height: parseInt(result.images.fixed_height.height) + 6,
             }}>
               <TouchableHighlight
-                onLongPress={this.image_did_long_press.bind(this)}
+                onLongPress={this.image_did_long_press.bind(this, result)}
               >
                 <Image
                   source={{uri: result.images.fixed_height.url}}
@@ -58,6 +60,16 @@ export default class App extends React.Component {
           ))}
         </View>
         </ScrollView>
+        
+        <Modal isVisible={this.state.modal_visible}>
+          <View style={{ backgroundColor: '#fff' }}>
+            <Button
+              title='Copy URL'
+              onPress={this.copy_did_press.bind(this)}
+              onBackdropPress={this.backdrop_did_press.bind(this)}
+            />
+          </View>
+        </Modal>        
       </View>
     );
   }
@@ -88,7 +100,17 @@ export default class App extends React.Component {
     })
   }
   
-  image_did_long_press() {
+  image_did_long_press(gif) {
+    this.setState({modal_visible: true, gif: gif})
+  }
+  
+  async copy_did_press() {
+    await Clipboard.setString(this.state.gif.images.fixed_height.url)
+    this.setState({modal_visible: false})
+  }
+  
+  backdrop_did_press() {
+    this.setState({modal_visible: false})
   }
 }
 
