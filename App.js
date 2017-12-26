@@ -61,12 +61,13 @@ export default class App extends React.Component {
         </View>
         </ScrollView>
         
-        <Modal isVisible={this.state.modal_visible}>
+        <Modal isVisible={this.state.modal_visible}
+          onBackdropPress={this.backdrop_did_press.bind(this)}
+        >
           <View style={{ backgroundColor: '#fff' }}>
             <Button
               title='Copy URL'
               onPress={this.copy_did_press.bind(this)}
-              onBackdropPress={this.backdrop_did_press.bind(this)}
             />
           </View>
         </Modal>        
