@@ -34,10 +34,7 @@ export default class App extends React.Component {
         />
         
         <ScrollView style={{width: '100%'}}>
-        <View style={{
-          flex: 1, flexDirection: 'row', flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}>
+        <View style={styles.images}>
           {this.state.results.map((result, index) => (
             result.images ?
             <View key={index} style={{
@@ -102,4 +99,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  
+  images: {
+    backgroundColor: '#000',
+    flex: 1, flexDirection: 'row', flexWrap: 'wrap',
+    justifyContent: 'center',
+  }
 });
