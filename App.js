@@ -1,10 +1,17 @@
 import Modal from 'react-native-modal'
 import React from 'react';
-import { Button, Clipboard, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, Clipboard, StyleSheet, Text, View } from 'react-native';
 import {Image, TextInput, TouchableHighlight, ScrollView} from 'react-native'
 import debounce from 'debounce'
 import Config from './config'
 import StatusBarBackground from './status-bar-background'
+
+// https://stackoverflow.com/questions/41056761/detect-scrollview-has-reached-the-end/41058382
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 400;
+  return layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom;
+};
 
 export default class App extends React.Component {
   constructor(props) {
@@ -35,7 +42,9 @@ export default class App extends React.Component {
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        <ScrollView style={{width: '100%'}}>
+        <ScrollView style={{width: '100%'}}
+          onScroll={this.did_scroll.bind(this)}
+        >
         <View style={styles.images}>
           {this.state.results.map((result, index) => (
             result.images ?
@@ -80,13 +89,19 @@ export default class App extends React.Component {
     this.fetch(text)
   }
   
-  fetch(query) {
-    const offset = 0
+  fetch(query, offset) {
+    offset = offset || 0
     fetch(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=${Config.api_key}&offset=${offset}`)
     .then(response => response.json())
     .then(payload => {
+      let results
+      if (offset == 0) {
+        results = payload.data
+      } else {
+        results = [...this.state.results, ...payload.data]
+      }
       this.setState({
-        results: payload.data,
+        results: results,
         query: query,
         offset: offset,
       })
@@ -112,6 +127,12 @@ export default class App extends React.Component {
   
   backdrop_did_press() {
     this.setState({modal_visible: false})
+  }
+  
+  did_scroll({nativeEvent}) {
+    if (isCloseToBottom(nativeEvent)) {
+      this.fetch(this.state.query, this.state.results.length)
+    }
   }
 }
 
