@@ -1,5 +1,5 @@
 import _ from 'underscore'
-import { Dimensions } from 'react-native'
+import { FlatList, Dimensions } from 'react-native'
 import Modal from 'react-native-modal'
 import React from 'react';
 import { Alert, Button, Clipboard, StyleSheet, Text, View } from 'react-native';
@@ -47,35 +47,34 @@ export default class App extends React.Component {
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        <ScrollView style={{width: '100%'}}
+        <FlatList style={{width: '100%'}}
           onScroll={this.did_scroll.bind(this)}
-        >
-          {this.state.rows.map((row, index) => (
-            <View style={styles.images} key={index}>
-              {row.map((result, result_index) => (
-                result.images ?
-                <View key={result_index} style={{
-                  width: parseInt(result.images.fixed_height.width) + 6,
-                  height: parseInt(result.images.fixed_height.height) + 6,
-                }}>
-                  <TouchableHighlight
-                    onLongPress={this.image_did_long_press.bind(this, result)}
-                  >
-                    <Image
-                      source={{uri: result.images.fixed_height.url}}
-                      style={{
-                        alignSelf: 'center',
-                        width: parseInt(result.images.fixed_height.width),
-                        height: parseInt(result.images.fixed_height.height),
-                      }}
-                    />
-                  </TouchableHighlight>
-                </View>
-                : null
-              ))}
-            </View>
-          ))}
-        </ScrollView>
+          data={this.state.rows}
+          renderItem={({item}) => {
+            const row = item
+            return row.map((result, result_index) => (
+              result.images ?
+              <View key={result_index} style={{
+                width: parseInt(result.images.fixed_height.width) + 6,
+                height: parseInt(result.images.fixed_height.height) + 6,
+              }}>
+                <TouchableHighlight
+                  onLongPress={this.image_did_long_press.bind(this, result)}
+                >
+                  <Image
+                    source={{uri: result.images.fixed_height.url}}
+                    style={{
+                      alignSelf: 'center',
+                      width: parseInt(result.images.fixed_height.width),
+                      height: parseInt(result.images.fixed_height.height),
+                    }}
+                  />
+                </TouchableHighlight>
+              </View>
+              : null
+            ))
+          }}
+        />
         
         <Modal isVisible={this.state.modal_visible}
           onBackdropPress={this.backdrop_did_press.bind(this)}
