@@ -21,6 +21,7 @@ export default class App extends React.Component {
       query: '',
       results: [],
       modal_visible: false,
+      loaded_offsets: {},
     }
     
     this.fetch = debounce(this.fetch, 1000)
@@ -91,12 +92,18 @@ export default class App extends React.Component {
   
   fetch(query, offset) {
     offset = offset || 0
+    if (offset && this.state.loaded_offsets[offset]) {
+      return
+    }
+    
+    this.state.loaded_offsets[offset] = true
     fetch(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=${Config.api_key}&offset=${offset}`)
     .then(response => response.json())
     .then(payload => {
       let results
       if (offset == 0) {
         results = payload.data
+        this.setState({loaded_offsets: {}})
       } else {
         results = [...this.state.results, ...payload.data]
       }
