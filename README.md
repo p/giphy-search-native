@@ -8,7 +8,18 @@ search gifs on a mobile device.
 
 ## Usage
 
+On a laptop/server:
+
 ```
 npm install
 npm start
 ```
+
+On a phone/tablet:
+
+- Install [Expo](https://expo.io/)
+- Scan the QR code shown on the laptop/server's terminal to open the app
+
+## License
+
+Released under the 2 clause BSD license.
