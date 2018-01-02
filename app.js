@@ -31,7 +31,7 @@ export default class App extends React.Component {
       content_size: null,
     }
     
-    this.fetch = debounce(this.fetch, 500)
+    //this.fetch = debounce(this.fetch, 500)
   }
   
   render_row(row) {
