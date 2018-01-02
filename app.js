@@ -26,6 +26,9 @@ export default class App extends React.Component {
       rows: [],
       modal_visible: false,
       loaded_offsets: {},
+      layout_measurement: null,
+      content_offset: {x: 0, y: 0},
+      content_size: null,
     }
     
     this.fetch = debounce(this.fetch, 1000)
@@ -51,9 +54,16 @@ export default class App extends React.Component {
           onScroll={this.did_scroll.bind(this)}
           data={this.state.rows}
           renderItem={({item}) => {
-            const row = item
+            const {index, entries} = item
+            const height = parseInt(entries[0].images.fixed_height.height)
+            if (height * index - this.state.content_offset < -1000 ||
+              height * index - this.state.content_offset > 1000)
+            {
+              return <View/>
+            }
+            
             return <View style={styles.images}>
-              {row.map((result, result_index) => (
+              {entries.map((result, result_index) => (
                 result.images ?
                 <View key={result_index} style={{
                   width: parseInt(result.images.fixed_height.width) + 6,
@@ -165,6 +175,16 @@ export default class App extends React.Component {
     if (isCloseToBottom(nativeEvent)) {
       this.fetch(this.state.query, this.state.results.length)
     }
+    const {layoutMeasurement, contentOffset, contentSize} = nativeEvent
+    this.setState({
+      content_offset: contentOffset,
+      content_size: contentSize,
+      layout_measurement: layoutMeasurement,
+    })
+  }
+  
+  componentDidMount() {
+    this.query_did_change('yay')
   }
 }
 
