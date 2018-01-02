@@ -34,6 +34,40 @@ export default class App extends React.Component {
     this.fetch = debounce(this.fetch, 1000)
   }
   
+  render_row(row) {
+    const {index, entries} = row
+    const height = parseInt(entries[0].images.fixed_height.height)
+    if (height * index - this.state.content_offset < -1000 ||
+      height * index - this.state.content_offset > 1000)
+    {
+      return <View/>
+    }
+    
+    return <View style={styles.images}>
+      {entries.map((result, result_index) => (
+        result.images ?
+        <View key={result_index} style={{
+          width: parseInt(result.images.fixed_height.width) + 6,
+          height: parseInt(result.images.fixed_height.height) + 6,
+        }}>
+          <TouchableHighlight
+            onLongPress={this.image_did_long_press.bind(this, result)}
+          >
+            <Image
+              source={{uri: result.images.fixed_height.url}}
+              style={{
+                alignSelf: 'center',
+                width: parseInt(result.images.fixed_height.width),
+                height: parseInt(result.images.fixed_height.height),
+              }}
+            />
+          </TouchableHighlight>
+        </View>
+        : null
+      ))}
+    </View>
+  }
+  
   render() {
     return (
       <View style={styles.container} onLayout={this.layout_did_change.bind(this)}>
@@ -50,43 +84,11 @@ export default class App extends React.Component {
           onChangeText={this.query_did_change.bind(this)}
         />
         
-        <FlatList style={{width: '100%'}}
+        <ScrollView style={{width: '100%'}}
           onScroll={this.did_scroll.bind(this)}
-          data={this.state.rows}
-          renderItem={({item}) => {
-            const {index, entries} = item
-            const height = parseInt(entries[0].images.fixed_height.height)
-            if (height * index - this.state.content_offset < -1000 ||
-              height * index - this.state.content_offset > 1000)
-            {
-              return <View/>
-            }
-            
-            return <View style={styles.images}>
-              {entries.map((result, result_index) => (
-                result.images ?
-                <View key={result_index} style={{
-                  width: parseInt(result.images.fixed_height.width) + 6,
-                  height: parseInt(result.images.fixed_height.height) + 6,
-                }}>
-                  <TouchableHighlight
-                    onLongPress={this.image_did_long_press.bind(this, result)}
-                  >
-                    <Image
-                      source={{uri: result.images.fixed_height.url}}
-                      style={{
-                        alignSelf: 'center',
-                        width: parseInt(result.images.fixed_height.width),
-                        height: parseInt(result.images.fixed_height.height),
-                      }}
-                    />
-                  </TouchableHighlight>
-                </View>
-                : null
-              ))}
-            </View>
-          }}
-        />
+        >
+          {this.state.rows.map(row => this.render_row(row))}
+        </ScrollView>
         
         <Modal isVisible={this.state.modal_visible}
           onBackdropPress={this.backdrop_did_press.bind(this)}
