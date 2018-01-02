@@ -31,16 +31,19 @@ export default class App extends React.Component {
       content_size: null,
     }
     
-    this.fetch = debounce(this.fetch, 1000)
+    this.fetch = debounce(this.fetch, 500)
   }
   
   render_row(row) {
     const {index, entries} = row
     const height = parseInt(entries[0].images.fixed_height.height)
-    if (height * index - this.state.content_offset < -1000 ||
-      height * index - this.state.content_offset > 1000)
+    //console.log(JSON.stringify([height,index,this.state.content_offset]))
+    if (height * index - this.state.content_offset.y < -2000 ||
+      height * index - this.state.content_offset.y > 2000)
     {
-      return <View/>
+      return <View style={{height:height}}>
+        <Text>Loading...</Text>
+      </View>
     }
     
     return <View style={styles.images}>
