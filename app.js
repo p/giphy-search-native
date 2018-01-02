@@ -89,6 +89,7 @@ export default class App extends React.Component {
         
         <ScrollView style={{width: '100%'}}
           onScroll={this.did_scroll.bind(this)}
+          scrollEventThrottle={200}
         >
           {this.state.rows.map(row => this.render_row(row))}
         </ScrollView>
