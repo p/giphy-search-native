@@ -6,6 +6,8 @@ to React Native.
 The goal of this project is to provide a quick and lightweight way to
 search gifs on a mobile device.
 
+![ipad screenshot](https://raw.githubusercontent.com/wiki/p/giphy-search-native/images/screenshot-ipad.jpg)
+
 ## Usage
 
 On a laptop/server:
